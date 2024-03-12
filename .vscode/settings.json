@@ -7,10 +7,18 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.esbenp.prettier-vscode": "explicit",
     "source.fixAll.eslint": "explicit",
-    "source.fixAll.stylelint": "explicit"
+    "source.fixAll.stylelint": "explicit",
+    "source.organizeImports": "never",
+    "source.sortImports": "never"
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript][typescriptreact]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "never",
+      "source.sortImports": "never"
+    }
   },
   "eslint.experimental.useFlatConfig": true,
   "eslint.options": {

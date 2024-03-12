@@ -8,7 +8,7 @@
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
       "name": "Launch Extension",
       "outFiles": ["${workspaceFolder}/out/**/*.js"],
-      "preLaunchTask": "npm",
+      "preLaunchTask": "watch",
       "request": "launch",
       "type": "extensionHost"
     }

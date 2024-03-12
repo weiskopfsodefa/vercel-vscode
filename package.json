@@ -47,7 +47,7 @@
   "scripts": {
     "vscode:prepublish": "npm run build",
     "build": "tsup",
-    "watch": "tsup"
+    "watch": "tsup --watch"
   },
   "dependencies": {
     "cross-fetch": "^4.0.0",
