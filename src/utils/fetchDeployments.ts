@@ -39,6 +39,7 @@ const fetchDeployments = async (
     throw new Error(data.error.message);
   }
 
+  console.log({ depls: data.deployments?.[0] });
   return data.deployments;
 };
 
