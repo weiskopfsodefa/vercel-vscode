@@ -1,11 +1,11 @@
 {
-  "name": "vercel-vscode",
-  "publisher": "haydenbleasel",
+  "name": "vercel-vscode-by-sodefa",
+  "publisher": "weiskopfsodefa",
   "private": true,
-  "displayName": "Vercel for VS Code",
+  "displayName": "Vercel for VS Code (sodefa)",
   "description": "A VS Code extension for Vercel deployment status.",
   "icon": "icon.png",
-  "version": "1.0.29",
+  "version": "2.0.0",
   "engines": {
     "vscode": "^1.72.0"
   },
@@ -20,7 +20,7 @@
   "main": "./out/extension.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/haydenbleasel/vercel-vscode"
+    "url": "https://github.com/weiskopfsodefa/vercel-vscode"
   },
   "contributes": {
     "configuration": {
@@ -58,8 +58,9 @@
     "typescript": "^5.2.2"
   },
   "prettier": "eslint-config-harmony/prettier",
-  "author": "Hayden Bleasel <hello@haydenbleasel.com>",
+  "author": "weiskopfsodefa",
   "contributors": [
+    "Original Author: Hayden Bleasel <hello@haydenbleasel.com>",
     "Anna Zhang <annazhang343@gmail.com>"
   ]
 }
