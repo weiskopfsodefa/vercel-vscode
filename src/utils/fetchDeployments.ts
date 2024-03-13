@@ -14,6 +14,7 @@ type VercelDeployment = {
   meta?: {
     githubCommitRef: string;
   };
+  inspectorUrl: string;
 };
 type VercelResponse = {
   error?: Error;

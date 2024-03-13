@@ -1,14 +1,17 @@
-import { StatusBarAlignment, window } from 'vscode';
+import { StatusBarAlignment, Uri, commands, env, window } from 'vscode';
 import updateStatus from '@/utils/updateStatus';
 import { getAccessToken } from './utils/config';
 import { triangle } from './utils/const';
 import toast from './utils/toast';
 import getVercelJson from './utils/vercelJson';
+import fetchDeploymentForBranch from './utils/fetchDeployments';
+import { getActiveBranch } from './utils/getCurrentBranch';
+import type { ExtensionContext } from 'vscode';
 
 // eslint-disable-next-line no-undef
 let interval: NodeJS.Timeout | null = null;
 
-export const activate = async (): Promise<void> => {
+export const activate = async (context: ExtensionContext): Promise<void> => {
   const accessToken = getAccessToken();
 
   console.log('Loaded Vercel Access Token');
@@ -39,10 +42,33 @@ export const activate = async (): Promise<void> => {
     return;
   }
 
+  const disposable = commands.registerCommand(
+    'vercelVSCode.openVercel',
+    async () => {
+      const currentBranch = getActiveBranch();
+      const deployment = await fetchDeploymentForBranch(
+        accessToken,
+        projectId,
+        orgId,
+        currentBranch
+      );
+      if (!deployment) {
+        await toast.error('No deployment found');
+        return;
+      }
+      const uri = Uri.parse(deployment.inspectorUrl);
+      await env.openExternal(uri);
+    }
+  );
+
+  context.subscriptions.push(disposable);
+
   const statusBarItem = window.createStatusBarItem(
     StatusBarAlignment.Right,
     100
   );
+
+  statusBarItem.command = 'vercelVSCode.openVercel';
 
   statusBarItem.text = `${triangle} Loading`;
   statusBarItem.tooltip = 'Loading Vercel deployment status...';
