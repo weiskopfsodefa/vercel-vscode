@@ -10,36 +10,43 @@ const updateStatus = async ({
   statusBarItem,
   accessToken,
   projectId,
-  teamId,
+  orgId,
 }: {
   statusBarItem: StatusBarItem;
   accessToken: string;
   projectId: string;
-  teamId?: string;
+  orgId?: string;
 }): Promise<void> => {
   try {
-    const deployments = await fetchDeployments(accessToken, projectId, teamId);
+    const currentBranch = getActiveBranch();
+    const deployment = await fetchDeployments(
+      accessToken,
+      projectId,
+      orgId,
+      currentBranch
+    );
 
-    if (!deployments?.length) {
+    if (!deployment) {
+      statusBarItem.text = `${triangle} No deployment found`;
+      statusBarItem.tooltip = `There was no deployment found in the last 10 deployments for this branch.`;
       return;
     }
 
     const activeBranch = getActiveBranch();
 
-    const { state, name, createdAt, source } = deployments[0];
+    const { state, name, createdAt, source } = deployment;
     const formattedDate = createdAt
       ? formatDistance(new Date(createdAt), new Date())
       : 'a while';
 
-    statusBarItem.text = `${triangle} ${toSentenceCase(state)} --${
-      activeBranch ?? 'no branch :('
-    }`;
+    statusBarItem.text = `${triangle} ${toSentenceCase(state)}`;
     statusBarItem.tooltip = [
       name ?? 'unknown repo',
       `(${state.toLowerCase()})`,
       `${formattedDate} ago`,
       'via',
       source ?? 'unknown source',
+      activeBranch ? `on ${activeBranch}` : '',
     ].join(' ');
   } catch (error) {
     const message = parseError(error);

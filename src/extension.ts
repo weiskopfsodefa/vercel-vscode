@@ -1,24 +1,17 @@
 import { StatusBarAlignment, window } from 'vscode';
 import updateStatus from '@/utils/updateStatus';
-import { getAccessToken, getProjectId, getTeamId } from './utils/config';
+import { getAccessToken } from './utils/config';
 import { triangle } from './utils/const';
 import toast from './utils/toast';
+import getVercelJson from './utils/vercelJson';
 
 // eslint-disable-next-line no-undef
 let interval: NodeJS.Timeout | null = null;
 
 export const activate = async (): Promise<void> => {
-  const projectId = await getProjectId();
-
-  console.log('Loaded Vercel Project ID', projectId);
-
-  if (!projectId) {
-    return;
-  }
-
   const accessToken = getAccessToken();
 
-  console.log('Loaded Vercel Access Token', projectId);
+  console.log('Loaded Vercel Access Token');
 
   if (!accessToken) {
     await toast.error(
@@ -27,10 +20,23 @@ export const activate = async (): Promise<void> => {
     return;
   }
 
-  const teamId = await getTeamId();
+  const vercelJson = await getVercelJson();
 
-  if (teamId) {
-    console.log('Loaded Vercel Team ID', teamId);
+  if (!vercelJson) {
+    await toast.error('No Vercel Project JSON found');
+    return;
+  }
+
+  const { orgId, projectId } = vercelJson;
+
+  if (!projectId) {
+    await toast.error('No Vercel Project ID found in vercel json');
+    return;
+  }
+
+  if (!orgId) {
+    await toast.error('No Vercel Org ID found in vercel json');
+    return;
   }
 
   const statusBarItem = window.createStatusBarItem(
@@ -47,7 +53,7 @@ export const activate = async (): Promise<void> => {
       statusBarItem,
       accessToken,
       projectId,
-      teamId,
+      orgId,
     });
 
   await update();

@@ -11,18 +11,18 @@ const getGitExtension = () => {
   throw new Error('Git extension is not available');
 };
 
-export const getActiveBranch = (): string | null => {
+export const getActiveBranch = (): string | undefined => {
   const gitApi = getGitExtension();
-  console.log({ gitApi: gitApi.repositories });
+  // console.log({ gitApi: gitApi.repositories });
   const activeEditorUri = vscode.window.activeTextEditor?.document.uri;
   if (!activeEditorUri) throw new Error('No active editor found');
   const wsFolderUri = vscode.workspace.getWorkspaceFolder(activeEditorUri)?.uri;
   if (!wsFolderUri) throw new Error('No workspace folder found');
   const repository = gitApi.getRepository(wsFolderUri);
-  console.log('repository', wsFolderUri);
+  // console.log('repository', wsFolderUri);
   if (repository) {
     const { HEAD } = repository.state;
-    return HEAD?.name ?? null;
+    return HEAD?.name;
   }
   throw new Error('No repository found');
 };
