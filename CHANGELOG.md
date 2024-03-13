@@ -1,3 +1,9 @@
+# v2.0.0 (Wed Mar 13 2024) - FORKED
+
+- Project configuration is only available via .vercel/project.json file (run `vercel link` to create it)
+- The latest build for your current branch is fetched instead of the latest build for the project
+- On click the vercel deployment is opened in the browser
+
 # v1.0.29 (Fri Jan 19 2024)
 
 #### ⚠️ Pushed to `main`
