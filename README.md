@@ -1,5 +1,26 @@
 # Vercel for VS Code
 
+## THIS IS A FORK FROM [haydenbleasel](https://github.com/haydenbleasel/vercel-vscode)
+
+### Following changes were made:
+
+- Project configuration is only available via .vercel/project.json file (run `vercel link` to create it)
+- The latest build for your current branch is fetched instead of the latest build for the project
+- On click the vercel deployment is opened in the browser
+
+### Setup the extension:
+
+- Install the extension
+- Run `vercel link` in your terminal
+- Insert your vercel access token in the extension settings
+- Reload VSCode
+
+### Known issues:
+
+- The extension only checks the latest 10 builds of your Project. If your branch is not in the latest 10 builds, the extension will not show the deployment status.
+
+# Original Readme:
+
 A VS Code extension for Vercel deployment status.
 
 ![Screenshot](./screenshot.png)
