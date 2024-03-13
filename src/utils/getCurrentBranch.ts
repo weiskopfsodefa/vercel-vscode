@@ -1,25 +1,31 @@
 import * as vscode from 'vscode';
-import type { GitExtension } from '@/types/git';
+import type { API, GitExtension } from '@/types/git';
+
+// eslint-disable-next-line @typescript-eslint/init-declarations
+let gitExtensionApi: API | undefined;
 
 const getGitExtension = () => {
+  console.log('Getting git extension');
   const vscodeGit = vscode.extensions.getExtension<GitExtension>('vscode.git');
-  const gitExtension = vscodeGit?.exports;
-  console.log(vscodeGit?.isActive);
-  if (gitExtension) {
-    return gitExtension.getAPI(1);
+  const gitExtensionExports = vscodeGit?.exports;
+  if (gitExtensionExports) {
+    gitExtensionApi = gitExtensionExports.getAPI(1);
+    return gitExtensionApi;
   }
   throw new Error('Git extension is not available');
 };
 
 export const getActiveBranch = (): string | undefined => {
-  const gitApi = getGitExtension();
-  // console.log({ gitApi: gitApi.repositories });
+  const gitApi = gitExtensionApi ?? getGitExtension();
+
   const activeEditorUri = vscode.window.activeTextEditor?.document.uri;
   if (!activeEditorUri) throw new Error('No active editor found');
+
   const wsFolderUri = vscode.workspace.getWorkspaceFolder(activeEditorUri)?.uri;
   if (!wsFolderUri) throw new Error('No workspace folder found');
+
   const repository = gitApi.getRepository(wsFolderUri);
-  // console.log('repository', wsFolderUri);
+
   if (repository) {
     const { HEAD } = repository.state;
     return HEAD?.name;
