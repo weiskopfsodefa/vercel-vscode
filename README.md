@@ -15,10 +15,6 @@
 - Insert your vercel access token in the extension settings
 - Reload VSCode
 
-### Known issues:
-
-- The extension only checks the latest 10 builds of your Project. If your branch is not in the latest 10 builds, the extension will not show the deployment status.
-
 # Original Readme:
 
 A VS Code extension for Vercel deployment status.

@@ -58,7 +58,7 @@ export const activate = async (context: ExtensionContext): Promise<void> => {
   const disposable = commands.registerCommand(
     'vercelVSCode.openVercel',
     async () => {
-      const currentBranch = getActiveBranch();
+      const currentBranch = await getActiveBranch();
       const deployment = await fetchDeploymentForBranch(
         accessToken,
         projectId,

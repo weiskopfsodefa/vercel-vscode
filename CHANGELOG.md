@@ -1,3 +1,7 @@
+# v2.0.2 (Thu Mar 14 2024)
+
+- fix known issue: check deployments depending on commit timestamp to find it even if its not one of the latest 10 deployments
+
 # v2.0.1 (Thu Mar 14 2024)
 
 - status bar color red on deployment error

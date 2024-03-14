@@ -19,7 +19,7 @@ const updateStatus = async ({
   orgId?: string;
 }): Promise<void> => {
   try {
-    const currentBranch = getActiveBranch();
+    const currentBranch = await getActiveBranch();
     const deployment = await fetchDeployments(
       accessToken,
       projectId,
@@ -32,8 +32,6 @@ const updateStatus = async ({
       statusBarItem.tooltip = `There was no deployment found in the last 10 deployments for this branch.`;
       return;
     }
-
-    const activeBranch = getActiveBranch();
 
     const { state, name, createdAt, source } = deployment;
     const formattedDate = createdAt
@@ -51,7 +49,7 @@ const updateStatus = async ({
       `${formattedDate} ago`,
       'via',
       source ?? 'unknown source',
-      activeBranch ? `on ${activeBranch}` : '',
+      currentBranch?.branchName ? `on ${currentBranch.branchName}` : '',
     ].join(' ');
   } catch (error) {
     const message = parseError(error);

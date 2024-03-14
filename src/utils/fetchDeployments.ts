@@ -1,4 +1,5 @@
 import fetch from 'cross-fetch';
+import { addMinutes } from 'date-fns';
 
 type VercelDeployment = {
   source?: string;
@@ -25,12 +26,16 @@ const fetchDeploymentForBranch = async (
   accessToken: string,
   projectId: string,
   teamId?: string,
-  currentBranch?: string
+  currentBranch?: { branchName?: string; commitDate?: Date }
 ): Promise<VercelDeployment | undefined> => {
+  const untilParam = currentBranch?.commitDate
+    ? `&until=${addMinutes(currentBranch.commitDate, 1).getTime()}`
+    : '';
+
   const response = await fetch(
     teamId
-      ? `https://api.vercel.com/v6/deployments?teamId=${teamId}&projectId=${projectId}&limit=10`
-      : `https://api.vercel.com/v6/deployments?projectId=${projectId}&limit=10`,
+      ? `https://api.vercel.com/v6/deployments?teamId=${teamId}&projectId=${projectId}&limit=10${untilParam}`
+      : `https://api.vercel.com/v6/deployments?projectId=${projectId}&limit=10${untilParam}`,
     {
       method: 'GET',
       headers: {
@@ -46,7 +51,8 @@ const fetchDeploymentForBranch = async (
   }
 
   const deploymentOfBranch = data.deployments?.find(
-    (deployment) => deployment.meta?.githubCommitRef === currentBranch
+    (deployment) =>
+      deployment.meta?.githubCommitRef === currentBranch?.branchName
   );
   return deploymentOfBranch;
 };

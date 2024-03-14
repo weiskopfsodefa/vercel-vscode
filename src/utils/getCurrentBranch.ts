@@ -15,7 +15,9 @@ const getGitExtension = () => {
   throw new Error('Git extension is not available');
 };
 
-export const getActiveBranch = (): string | undefined => {
+export const getActiveBranch = async (): Promise<
+  { branchName?: string; commitDate?: Date } | undefined
+> => {
   const gitApi = gitExtensionApi ?? getGitExtension();
 
   const activeEditorUri = vscode.window.activeTextEditor?.document.uri;
@@ -28,7 +30,11 @@ export const getActiveBranch = (): string | undefined => {
 
   if (repository) {
     const { HEAD } = repository.state;
-    return HEAD?.name;
+    if (!HEAD?.commit) throw new Error('No HEAD found');
+    const commit = await repository.getCommit(HEAD.commit);
+    const date = commit.commitDate;
+
+    return { branchName: HEAD.name, commitDate: date };
   }
   throw new Error('No repository found');
 };
