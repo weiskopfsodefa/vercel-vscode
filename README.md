@@ -12,7 +12,7 @@
 
 - Install the extension
 - Run `vercel link` in your terminal
-- Insert your vercel access token in the extension settings
+- Insert your vercel access token in the extension settings. [Get it here](https://vercel.com/account/tokens)
 - Reload VSCode
 
 # Original Readme:
