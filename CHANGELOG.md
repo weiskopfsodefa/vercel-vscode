@@ -1,3 +1,7 @@
+# v2.0.1 (Thu Mar 14 2024)
+
+- status bar color red on deployment error
+
 # v2.0.0 (Wed Mar 13 2024) - FORKED
 
 - Project configuration is only available via .vercel/project.json file (run `vercel link` to create it)
