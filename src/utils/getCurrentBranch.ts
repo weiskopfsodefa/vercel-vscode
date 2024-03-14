@@ -20,10 +20,7 @@ export const getActiveBranch = async (): Promise<
 > => {
   const gitApi = gitExtensionApi ?? getGitExtension();
 
-  const activeEditorUri = vscode.window.activeTextEditor?.document.uri;
-  if (!activeEditorUri) throw new Error('No active editor found');
-
-  const wsFolderUri = vscode.workspace.getWorkspaceFolder(activeEditorUri)?.uri;
+  const wsFolderUri = vscode.workspace.workspaceFolders?.[0]?.uri;
   if (!wsFolderUri) throw new Error('No workspace folder found');
 
   const repository = gitApi.getRepository(wsFolderUri);

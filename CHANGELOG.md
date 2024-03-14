@@ -1,3 +1,7 @@
+# v2.0.3 (Thu Mar 14 2024)
+
+- fix stuck in loading state when no text editor is open
+
 # v2.0.2 (Thu Mar 14 2024)
 
 - fix known issue: check deployments depending on commit timestamp to find it even if its not one of the latest 10 deployments
