@@ -1,4 +1,11 @@
-import { StatusBarAlignment, Uri, commands, env, window } from 'vscode';
+import {
+  StatusBarAlignment,
+  Uri,
+  commands,
+  env,
+  window,
+  workspace,
+} from 'vscode';
 import updateStatus from '@/utils/updateStatus';
 import { getAccessToken } from './utils/config';
 import { triangle } from './utils/const';
@@ -12,6 +19,12 @@ import type { ExtensionContext } from 'vscode';
 let interval: NodeJS.Timeout | null = null;
 
 export const activate = async (context: ExtensionContext): Promise<void> => {
+  // check if workspace is loaded
+  const root = workspace.workspaceFolders?.[0];
+  if (!root) {
+    return;
+  }
+
   const accessToken = getAccessToken();
 
   console.log('Loaded Vercel Access Token');

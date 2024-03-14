@@ -1,4 +1,5 @@
 import { formatDistance } from 'date-fns';
+import { ThemeColor } from 'vscode';
 import fetchDeployments from '@/utils/fetchDeployments';
 import parseError from '@/utils/parseError';
 import toSentenceCase from '@/utils/sentenceCase';
@@ -40,6 +41,10 @@ const updateStatus = async ({
       : 'a while';
 
     statusBarItem.text = `${triangle} ${toSentenceCase(state)}`;
+    statusBarItem.backgroundColor =
+      deployment.state === 'ERROR'
+        ? new ThemeColor('statusBarItem.errorBackground')
+        : new ThemeColor('statusBar.background');
     statusBarItem.tooltip = [
       name ?? 'unknown repo',
       `(${state.toLowerCase()})`,
