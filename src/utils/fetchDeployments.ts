@@ -33,7 +33,7 @@ const fetchDeploymentForBranch = async (
     : '';
 
   const response = await fetch(
-    teamId
+    teamId?.startsWith('team_')
       ? `https://api.vercel.com/v6/deployments?teamId=${teamId}&projectId=${projectId}&limit=10${untilParam}`
       : `https://api.vercel.com/v6/deployments?projectId=${projectId}&limit=10${untilParam}`,
     {

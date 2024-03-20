@@ -29,7 +29,7 @@ const updateStatus = async ({
 
     if (!deployment) {
       statusBarItem.text = `${triangle} No deployment found`;
-      statusBarItem.tooltip = `There was no deployment found in the last 10 deployments for this branch.`;
+      statusBarItem.tooltip = `There was no deployment found for this branch.`;
       return;
     }
 
