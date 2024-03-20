@@ -1,3 +1,7 @@
+# v2.0.5 (Wed Mar 20 2024)
+
+- more subtle errors when project not linked or auth token not valid
+
 # v2.0.4 (Wed Mar 20 2024)
 
 - fix private projects not authorized bug

@@ -20,27 +20,38 @@ const updateStatus = async ({
 }): Promise<void> => {
   try {
     const currentBranch = await getActiveBranch();
-    const deployment = await fetchDeployments(
+    const deploymentsResult = await fetchDeployments(
       accessToken,
       projectId,
       orgId,
       currentBranch
     );
 
-    if (!deployment) {
+    if (deploymentsResult.error) {
+      const err = deploymentsResult.error;
+      statusBarItem.text = `${triangle} Error`;
+      statusBarItem.tooltip = `${err.message}`;
+      statusBarItem.backgroundColor = new ThemeColor(
+        'statusBarItem.warningBackground'
+      );
+      return;
+    }
+
+    if (!deploymentsResult.latestDeploymentForBranch) {
       statusBarItem.text = `${triangle} No deployment found`;
       statusBarItem.tooltip = `There was no deployment found for this branch.`;
       return;
     }
 
-    const { state, name, createdAt, source } = deployment;
+    const { state, name, createdAt, source } =
+      deploymentsResult.latestDeploymentForBranch;
     const formattedDate = createdAt
       ? formatDistance(new Date(createdAt), new Date())
       : 'a while';
 
     statusBarItem.text = `${triangle} ${toSentenceCase(state)}`;
     statusBarItem.backgroundColor =
-      deployment.state === 'ERROR'
+      state === 'ERROR'
         ? new ThemeColor('statusBarItem.errorBackground')
         : new ThemeColor('statusBar.background');
     statusBarItem.tooltip = [

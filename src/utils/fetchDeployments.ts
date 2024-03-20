@@ -27,7 +27,9 @@ const fetchDeploymentForBranch = async (
   projectId: string,
   teamId?: string,
   currentBranch?: { branchName?: string; commitDate?: Date }
-): Promise<VercelDeployment | undefined> => {
+): Promise<
+  VercelResponse & { latestDeploymentForBranch?: VercelDeployment }
+> => {
   const untilParam = currentBranch?.commitDate
     ? `&until=${addMinutes(currentBranch.commitDate, 1).getTime()}`
     : '';
@@ -46,15 +48,12 @@ const fetchDeploymentForBranch = async (
 
   const data = (await response.json()) as VercelResponse;
 
-  if (data.error) {
-    throw new Error(data.error.message);
-  }
-
-  const deploymentOfBranch = data.deployments?.find(
+  const latestDeploymentForBranch = data.deployments?.find(
     (deployment) =>
       deployment.meta?.githubCommitRef === currentBranch?.branchName
   );
-  return deploymentOfBranch;
+
+  return { ...data, latestDeploymentForBranch };
 };
 
 export default fetchDeploymentForBranch;

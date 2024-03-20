@@ -31,15 +31,23 @@ export const activate = async (context: ExtensionContext): Promise<void> => {
 
   if (!accessToken) {
     await toast.error(
-      'Please set your Vercel Access Token in the extension settings'
+      'Please set your [Vercel Access Token](https://vercel.com/account/tokens) in the extension settings `vercelVSCode.accessToken`.'
     );
     return;
   }
 
+  const statusBarItem = window.createStatusBarItem(
+    StatusBarAlignment.Right,
+    100
+  );
+
   const vercelJson = await getVercelJson();
 
   if (!vercelJson) {
-    await toast.error('No Vercel Project JSON found');
+    statusBarItem.text = `${triangle} Not Linked`;
+    statusBarItem.tooltip =
+      'Run `vercel link` to link this project to Vercel deployments and enable this extension.';
+    statusBarItem.show();
     return;
   }
 
@@ -59,27 +67,22 @@ export const activate = async (context: ExtensionContext): Promise<void> => {
     'vercelVSCode.openVercel',
     async () => {
       const currentBranch = await getActiveBranch();
-      const deployment = await fetchDeploymentForBranch(
+      const deployments = await fetchDeploymentForBranch(
         accessToken,
         projectId,
         orgId,
         currentBranch
       );
-      if (!deployment) {
-        await toast.error('No deployment found');
+      if (!deployments.latestDeploymentForBranch?.inspectorUrl) {
+        await toast.error('No deployment url found');
         return;
       }
-      const uri = Uri.parse(deployment.inspectorUrl);
+      const uri = Uri.parse(deployments.latestDeploymentForBranch.inspectorUrl);
       await env.openExternal(uri);
     }
   );
 
   context.subscriptions.push(disposable);
-
-  const statusBarItem = window.createStatusBarItem(
-    StatusBarAlignment.Right,
-    100
-  );
 
   statusBarItem.command = 'vercelVSCode.openVercel';
 
