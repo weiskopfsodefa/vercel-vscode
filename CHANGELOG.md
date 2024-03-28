@@ -1,5 +1,9 @@
 # v2.0.6 (Thu Mar 28 2024)
 
+- Caching vercel.json read result to reduce resource usage
+
+# v2.0.6 (Thu Mar 28 2024)
+
 - Faster initial loading times by quicker retrying to read the git repo
 - No necessity anymore to reload vscode after linking project
 

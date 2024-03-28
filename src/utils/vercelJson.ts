@@ -13,14 +13,19 @@ type Optional<T> = {
   [P in keyof T]?: T[P];
 };
 
+// eslint-disable-next-line @typescript-eslint/init-declarations
+let res: VercelProjectJson | undefined;
+
 const getVercelJson = async ({
   myStatusBarItem,
 }: {
   myStatusBarItem: MyStatusBarItemType;
 }): Promise<VercelProjectJson | undefined> => {
-  const root = workspace.workspaceFolders?.[0];
+  if (res) {
+    return res;
+  }
 
-  console.log('Checking Vercel Project JSON from root', root?.uri.path);
+  const root = workspace.workspaceFolders?.[0];
 
   if (!root) {
     return undefined;
@@ -60,7 +65,10 @@ const getVercelJson = async ({
       myStatusBarItem.setTooltip('No Vercel Org ID found in vercel json');
       return undefined;
     }
-    return parsedVercelProjectJSON as VercelProjectJson;
+
+    // eslint-disable-next-line require-atomic-updates
+    res = parsedVercelProjectJSON as VercelProjectJson;
+    return res;
   } catch (error) {
     const message = parseError(error);
     await toast.error(message);
