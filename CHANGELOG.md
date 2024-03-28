@@ -1,4 +1,4 @@
-# v2.0.6 (Thu Mar 28 2024)
+# v2.0.7 (Thu Mar 28 2024)
 
 - Caching vercel.json read result to reduce resource usage
 
