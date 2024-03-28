@@ -1,3 +1,8 @@
+# v2.0.6 (Thu Mar 28 2024)
+
+- Faster initial loading times by quicker retrying to read the git repo
+- No necessity anymore to reload vscode after linking project
+
 # v2.0.5 (Wed Mar 20 2024)
 
 - more subtle errors when project not linked or auth token not valid

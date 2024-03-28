@@ -1,11 +1,4 @@
-import {
-  StatusBarAlignment,
-  Uri,
-  commands,
-  env,
-  window,
-  workspace,
-} from 'vscode';
+import { Uri, commands, env, workspace } from 'vscode';
 import updateStatus from '@/utils/updateStatus';
 import { getAccessToken } from './utils/config';
 import { triangle } from './utils/const';
@@ -13,6 +6,7 @@ import toast from './utils/toast';
 import getVercelJson from './utils/vercelJson';
 import fetchDeploymentForBranch from './utils/fetchDeployments';
 import { getActiveBranch } from './utils/getCurrentBranch';
+import MyStatusBarItem from './utils/statusBarItem';
 import type { ExtensionContext } from 'vscode';
 
 // eslint-disable-next-line no-undef
@@ -36,36 +30,16 @@ export const activate = async (context: ExtensionContext): Promise<void> => {
     return;
   }
 
-  const statusBarItem = window.createStatusBarItem(
-    StatusBarAlignment.Right,
-    100
-  );
-
-  const vercelJson = await getVercelJson();
-
-  if (!vercelJson) {
-    statusBarItem.text = `${triangle} Not Linked`;
-    statusBarItem.tooltip =
-      'Run `vercel link` to link this project to Vercel deployments and enable this extension.';
-    statusBarItem.show();
-    return;
-  }
-
-  const { orgId, projectId } = vercelJson;
-
-  if (!projectId) {
-    await toast.error('No Vercel Project ID found in vercel json');
-    return;
-  }
-
-  if (!orgId) {
-    await toast.error('No Vercel Org ID found in vercel json');
-    return;
-  }
+  const myStatusBarItem = new MyStatusBarItem();
 
   const disposable = commands.registerCommand(
     'vercelVSCode.openVercel',
     async () => {
+      const vercelJson = await getVercelJson({ myStatusBarItem });
+      if (!vercelJson) {
+        return;
+      }
+      const { projectId, orgId } = vercelJson;
       const currentBranch = await getActiveBranch();
       const deployments = await fetchDeploymentForBranch(
         accessToken,
@@ -84,22 +58,17 @@ export const activate = async (context: ExtensionContext): Promise<void> => {
 
   context.subscriptions.push(disposable);
 
-  statusBarItem.command = 'vercelVSCode.openVercel';
-
-  statusBarItem.text = `${triangle} Loading`;
-  statusBarItem.tooltip = 'Loading Vercel deployment status...';
-  statusBarItem.show();
+  myStatusBarItem.setText(`${triangle} Loading`);
+  myStatusBarItem.setTooltip('Loading Vercel deployment status...');
+  myStatusBarItem.command('vercelVSCode.openVercel');
 
   const update = async () =>
     updateStatus({
-      statusBarItem,
+      myStatusBarItem,
       accessToken,
-      projectId,
-      orgId,
     });
 
   await update();
-
   interval = setInterval(async () => {
     await update();
   }, 5000);

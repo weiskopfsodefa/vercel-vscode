@@ -15,6 +15,8 @@ const getGitExtension = () => {
   throw new Error('Git extension is not available');
 };
 
+let retries = 0;
+
 export const getActiveBranch = async (): Promise<
   { branchName?: string; commitDate?: Date } | undefined
 > => {
@@ -25,13 +27,33 @@ export const getActiveBranch = async (): Promise<
 
   const repository = gitApi.getRepository(wsFolderUri);
 
-  if (repository) {
-    const { HEAD } = repository.state;
-    if (!HEAD?.commit) throw new Error('No HEAD found');
-    const commit = await repository.getCommit(HEAD.commit);
-    const date = commit.commitDate;
+  try {
+    if (repository) {
+      const { HEAD } = repository.state;
+      if (!HEAD?.commit) throw new Error('No HEAD found');
+      const commit = await repository.getCommit(HEAD.commit);
+      const date = commit.commitDate;
+      retries = 0;
+      return { branchName: HEAD.name, commitDate: date };
+    }
+    throw new Error('No repository found');
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    } else {
+      console.error(err);
+    }
 
-    return { branchName: HEAD.name, commitDate: date };
+    retries += 1;
+
+    // eslint-disable-next-line promise/avoid-new
+    await new Promise((resolve) => {
+      setTimeout(resolve, 500);
+    });
+    if (retries <= 5) {
+      console.log('Retrying...');
+      return getActiveBranch();
+    }
+    throw new Error('Failed to get active branch');
   }
-  throw new Error('No repository found');
 };
